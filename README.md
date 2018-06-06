@@ -3,7 +3,7 @@ An application to help you remember important files or links you use semi-regula
 
 Be even more scatterbrained than before!
 
-![AppTiles example](https://raw.githubusercontent.com/Szune/AppTiles/-file-)
+![AppTiles example](https://raw.githubusercontent.com/Szune/AppTiles/master/Example.png)
 
 ## How to use
 * Left click to perform the tile's action, whether it be opening its container, starting a program, etc.
