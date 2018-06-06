@@ -1,0 +1,12 @@
+﻿<Window x:Class="AppTiles.Windows.TileCollectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AppTiles.Windows"
+        mc:Ignorable="d"
+        Title="AppTiles - Main" Height="350" Width="525" PreviewKeyUp="TileCollectionWindow_OnPreviewKeyUp" SizeChanged="TileCollectionWindow_OnSizeChanged">
+    <Grid x:Name="MainGrid">
+        
+    </Grid>
+</Window>

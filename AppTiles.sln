@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2036
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppTiles", "src\AppTiles.csproj", "{1F39E224-908D-49B6-821B-E06B002754E9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{3E5EC630-6C09-417F-878B-EBF246A7A8EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F39E224-908D-49B6-821B-E06B002754E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F39E224-908D-49B6-821B-E06B002754E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F39E224-908D-49B6-821B-E06B002754E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F39E224-908D-49B6-821B-E06B002754E9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1F39E224-908D-49B6-821B-E06B002754E9} = {3E5EC630-6C09-417F-878B-EBF246A7A8EE}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DD581F97-99CD-4F7B-AF01-C3F3685D65B4}
+	EndGlobalSection
+EndGlobal
