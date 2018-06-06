@@ -1,4 +1,27 @@
-﻿using AppTiles.Attributes;
+﻿#region License & Terms
+// MIT License
+
+// Copyright (c) 2018 Erik Iwarson
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE. 
+#endregion
+using AppTiles.Attributes;
 using AppTiles.Tiles;
 using AppTiles.Windows;
 using System;
@@ -10,6 +33,7 @@ using System.Windows.Media;
 
 namespace AppTiles.Helpers
 {
+    /* I would like to do this in a less bad way in the future. */
     public static class EditorHelper
     {
         private static readonly Dictionary<Type, EditTileWindow> CachedEditors = new Dictionary<Type, EditTileWindow>();
