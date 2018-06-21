@@ -41,6 +41,7 @@ namespace AppTiles.Windows
     /// </summary>
     public partial class NoteWindow : Window
     {
+        private bool _askedToSave;
         private readonly NoteTile _tile;
         #if rtbLags
             private readonly TextBox _txtNote = new TextBox{AcceptsReturn = true, AcceptsTab = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto};
@@ -98,10 +99,12 @@ namespace AppTiles.Windows
 
         private void AskToSave()
         {
-            if (_tile.Note == GetText())
+            if (_tile.Note == GetText() || _askedToSave)
             {
                 return;
             }
+
+            _askedToSave = true;
             var result = MessageBox.Show("There are unsaved changes. Would you like to save them?",
                 "Unsaved changes",
                 MessageBoxButton.YesNo, MessageBoxImage.Question);
