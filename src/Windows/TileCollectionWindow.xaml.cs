@@ -30,6 +30,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using AppTiles.Logging;
 
 namespace AppTiles.Windows
 {
@@ -51,12 +52,13 @@ namespace AppTiles.Windows
             else 
                 UseSettings();
             _tiles = Settings.Current.Tiles;
-            ProcessHelper.UseSettings(Settings.Current);
+            PathVariables.UseSettings(Settings.Current);
             Settings.SetMainWindow(this);
         }
 
         private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
+            DebugLogger.Save();
             if (Settings.IsChanged)
                 AskToSave();
             Application.Current.Shutdown();

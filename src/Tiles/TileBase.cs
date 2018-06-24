@@ -95,6 +95,7 @@ namespace AppTiles.Tiles
         public void SetButton(TileButton button)
         {
             Button = button;
+            Button.RefreshCommands();
         }
 
         public virtual void Reset()
@@ -102,6 +103,11 @@ namespace AppTiles.Tiles
             Text = "-";
             Background = Colors.Black;
             Foreground = Colors.White;
+        }
+
+        public override string ToString()
+        {
+            return $"[{GetType()} ({Id})] {Text}";
         }
     }
 }

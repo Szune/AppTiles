@@ -21,6 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE. 
 #endregion
+
 using AppTiles.Commands;
 using AppTiles.Input;
 using AppTiles.Tiles;
@@ -34,14 +35,16 @@ namespace AppTiles.Controls
 {
     public class TileButton : Button
     {
-        private static readonly TransformToAppCommand ToAppCommand = new TransformToAppCommand();
-        private static readonly TransformToContainerCommand ToContainerCommand = new TransformToContainerCommand();
-        private static readonly TransformToNoteCommand ToNoteCommand = new TransformToNoteCommand();
         private static readonly ExecuteTileCommand ExecuteCommand = new ExecuteTileCommand();
         private static readonly ResetTileCommand ResetCommand = new ResetTileCommand();
         private ITile _tile;
         private readonly Window _window;
         private static readonly ControlTemplate ButtonTemplate;
+
+        private readonly OpenFolderCommand _openFolderCommand = new OpenFolderCommand();
+        private readonly TransformToAppCommand _toAppCommand = new TransformToAppCommand();
+        private readonly TransformToContainerCommand _toContainerCommand = new TransformToContainerCommand();
+        private readonly TransformToNoteCommand _toNoteCommand = new TransformToNoteCommand();
 
         static TileButton()
         {
@@ -113,7 +116,7 @@ namespace AppTiles.Controls
                 contextMenu.Items.Add(new MenuItem
                 {
                     Header = "Open folder",
-                    Command = new OpenFolderCommand(),
+                    Command = _openFolderCommand,
                     CommandParameter = _tile,
                 });
             }
@@ -127,19 +130,19 @@ namespace AppTiles.Controls
                     new MenuItem
                     {
                         Header = "App",
-                        Command = ToAppCommand,
+                        Command = _toAppCommand,
                         CommandParameter = _tile
                     },
                     new MenuItem
                     {
                         Header = "Container",
-                        Command = ToContainerCommand,
+                        Command = _toContainerCommand,
                         CommandParameter = _tile
                     },
                     new MenuItem
                     {
                         Header = "Note",
-                        Command = ToNoteCommand,
+                        Command = _toNoteCommand,
                         CommandParameter = _tile
                     }
                 }
@@ -169,7 +172,7 @@ namespace AppTiles.Controls
 
         private void Button_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            MouseDrag.ResetPosition();
+            MouseDrag.ResetAll();
         }
 
         private void Button_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -184,7 +187,7 @@ namespace AppTiles.Controls
             if (!(newButton._tile is ITile newTile))
                 return;
 
-            if (MouseDrag.LastSender == null)
+            if (!MouseDrag.IsBeingPerformed) // if dragging from file explorer, we won't be notified until it's dropped
             {
                 if (!(newTile is AppTile app))
                     return;
@@ -211,6 +214,7 @@ namespace AppTiles.Controls
             var tempButton = newTile.Button;
             oldTile.Button.Update(newTile);
             tempButton.Update(oldTile);
+            MouseDrag.ResetAll();
         }
 
         private void DoDragDropFromFileExplorer(DragEventArgs e, AppTile newTile)
@@ -229,6 +233,7 @@ namespace AppTiles.Controls
             newTile.Path = path;
             newTile.Text = text;
             Settings.SetChanged();
+            MouseDrag.ResetAll();
         }
 
         public void UpdateText(string text)
@@ -241,6 +246,14 @@ namespace AppTiles.Controls
             {
                 Content = text;
             }
+        }
+
+        public void RefreshCommands()
+        {
+            _openFolderCommand.Refresh();
+            _toAppCommand.Refresh();
+            _toContainerCommand.Refresh();
+            _toNoteCommand.Refresh();
         }
     }
 }

@@ -21,34 +21,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE. 
 #endregion
-using System;
-using System.Windows;
-using System.Windows.Input;
 using AppTiles.Tiles;
+using System.Windows;
 
 namespace AppTiles.Commands
 {
-    public class MoveTileCommand : ICommand
+    public class MoveTileCommand : RefreshableCommand
     {
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
+            Logging.DebugLogger.WriteLine($"{GetType().Name}.{nameof(CanExecute)}({parameter})");
             return true;
         }
 
-        public void Execute(object parameter)
+        public override void Execute(object parameter)
         {
+            Logging.DebugLogger.WriteLine($"{GetType().Name}.{nameof(Execute)}({parameter})");
             MoveTile((ITile) parameter);
         }
 
         private static void MoveTile(ITile tile)
         {
             DragDrop.DoDragDrop(tile.Button, new DataObject(typeof(ITile), tile), DragDropEffects.Move);
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add => CommandManager.RequerySuggested += value;
-            remove => CommandManager.RequerySuggested -= value;
         }
     }
 }

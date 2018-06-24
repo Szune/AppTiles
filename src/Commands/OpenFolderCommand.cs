@@ -21,29 +21,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE. 
 #endregion
-using System;
-using System.Windows.Input;
 using AppTiles.Tiles;
 
 namespace AppTiles.Commands
 {
-    public class OpenFolderCommand : ICommand
+    public class OpenFolderCommand : RefreshableCommand
     {
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
+            Logging.DebugLogger.WriteLine($"{GetType().Name}.{nameof(CanExecute)}({parameter})");
             if (!(parameter is AppTile app)) return false;
-            return app.CanOpenFolder();
+            return app.GetFolderAvailability();
         }
 
-        public void Execute(object parameter)
+        public override void Execute(object parameter)
         {
-            ((AppTile)parameter).OpenFolder();
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add => CommandManager.RequerySuggested += value;
-            remove => CommandManager.RequerySuggested -= value;
+            Logging.DebugLogger.WriteLine($"{GetType().Name}.{nameof(Execute)}({parameter})");
+            if (!(parameter is AppTile tile))
+            {
+                Logging.DebugLogger.WriteLine($"{GetType().Name}.{nameof(Execute)}({parameter})");
+                return;
+            }
+            tile.OpenFolder();
         }
     }
 }

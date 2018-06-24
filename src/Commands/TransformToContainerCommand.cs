@@ -21,24 +21,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE. 
 #endregion
-using System;
-using System.Windows;
-using System.Windows.Input;
 using AppTiles.Tiles;
+using System.Windows;
 
 namespace AppTiles.Commands
 {
-    public class TransformToContainerCommand : ICommand
+    public class TransformToContainerCommand : RefreshableCommand
     {
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
+            Logging.DebugLogger.WriteLine($"{GetType().Name}.{nameof(CanExecute)}({parameter})");
             if (parameter is ContainerTile)
                 return false;
             return true;
         }
 
-        public void Execute(object parameter)
+        public override void Execute(object parameter)
         {
+            Logging.DebugLogger.WriteLine($"{GetType().Name}.{nameof(Execute)}({parameter})");
             var result = MessageBox.Show("Are you sure you want to transform this tile?", "Warning!",
                 MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (result == MessageBoxResult.No)
@@ -60,12 +60,6 @@ namespace AppTiles.Commands
             tile.Button.Update(newTile);
             Settings.ReplaceTile(tile, newTile);
             new EditTileCommand().Execute(newTile);
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add => CommandManager.RequerySuggested += value;
-            remove => CommandManager.RequerySuggested -= value;
         }
     }
 }

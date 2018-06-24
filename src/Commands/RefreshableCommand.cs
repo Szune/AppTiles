@@ -21,22 +21,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE. 
 #endregion
-using AppTiles.Tiles;
+
+using System;
+using System.Windows.Input;
 
 namespace AppTiles.Commands
 {
-    public class ExecuteTileCommand : RefreshableCommand
+    public abstract class RefreshableCommand : ICommand
     {
-        public override bool CanExecute(object parameter)
+        public abstract bool CanExecute(object parameter);
+        public abstract void Execute(object parameter);
+
+        public void Refresh()
         {
-            Logging.DebugLogger.WriteLine($"{GetType().Name}.{nameof(CanExecute)}({parameter})");
-            return true;
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public override void Execute(object parameter)
-        {
-            Logging.DebugLogger.WriteLine($"{GetType().Name}.{nameof(Execute)}({parameter})");
-            ((ITile)parameter).Execute();
-        }
+        public event EventHandler CanExecuteChanged;
     }
 }

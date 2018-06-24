@@ -63,9 +63,9 @@ namespace AppTiles.Windows
         private void Start()
         {
             if(!string.IsNullOrWhiteSpace(_arguments))
-                ProcessHelper.StartProcess(_path, _arguments + " " + TxtArguments.Text);
+                ProcessHelper.Start(_path, _arguments + " " + TxtArguments.Text);
             else
-                ProcessHelper.StartProcess(_path, TxtArguments.Text);
+                ProcessHelper.Start(_path, TxtArguments.Text);
             Close();
         }
     }

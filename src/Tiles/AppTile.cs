@@ -33,19 +33,27 @@ namespace AppTiles.Tiles
 {
     public class AppTile : TileBase
     {
+        private string _path;
+
         [ShowInEditor]
-        public string Path { get; set; }
+        public string Path
+        {
+            get => _path;
+            set
+            {
+                _path = value;
+                RefreshFolderAvailability();
+            }
+        }
         [ShowInEditor(DisplayText = "Is taking input", IsAdvanced = true)]
         public bool IsTakingInput { get; set; }
         [ShowInEditor]
         public string Arguments { get; set; }
 
+        private bool _canOpenFolder;
 
-        public AppTile(int id, int column, int row) : base(id, column, row, "-", Colors.Black, Colors.White)
+        public AppTile(int id, int column, int row) : this(id, column, row, "-", Colors.Black, Colors.White, "", "")
         {
-            Path = "";
-            Arguments = "";
-            IsTakingInput = false;
         }
 
         [JsonConstructor]
@@ -57,10 +65,23 @@ namespace AppTiles.Tiles
             IsTakingInput = isTakingInput;
         }
 
+        private void RefreshFolderAvailability()
+        {
+            Button?.RefreshCommands();
+            if (string.IsNullOrWhiteSpace(Path))
+                _canOpenFolder = false; // exit asap
+            var resolver = new PathResolver(Path);
+            _canOpenFolder = resolver.Type == PathType.File || resolver.Type == PathType.Directory;
+        }
+
+        public bool GetFolderAvailability()
+        {
+            return _canOpenFolder;
+        }
+
         public override void Execute()
         {
-            var path = Path;
-            if (string.IsNullOrWhiteSpace(path))
+            if (string.IsNullOrWhiteSpace(Path))
             {
                 MessageBox.Show("No path set.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
@@ -74,11 +95,10 @@ namespace AppTiles.Tiles
 
             try
             {
-                path = ProcessHelper.ReplaceVariables(path);
                 if(string.IsNullOrWhiteSpace(Arguments))
-                    ProcessHelper.StartProcess(path);
+                    ProcessHelper.Start(Path);
                 else
-                    ProcessHelper.StartProcess(path, Arguments);
+                    ProcessHelper.Start(Path, Arguments);
             }
             catch (Exception ex)
             {
@@ -94,29 +114,13 @@ namespace AppTiles.Tiles
             base.Reset();
         }
 
-        public bool CanOpenFolder()
-        {
-            if (string.IsNullOrWhiteSpace(Path))
-                return false; // exit asap
-            var path = ProcessHelper.ReplaceVariables(Path);
-            if (!string.IsNullOrWhiteSpace(System.IO.Path.GetExtension(path)))
-                path = System.IO.Path.GetDirectoryName(path);
-
-            return !ProcessHelper.HasProtocol(path);
-            // I could use Directory.Exists(), but considering the amount of times that CanExecute() can be checked on a command
-            // I'd rather do file system checks fewer times and have a 'good enough' solution here
-            // will be improved upon later
-        }
-
         public void OpenFolder()
         {
             try
             {
-                var path = ProcessHelper.ReplaceVariables(Path);
-                if (!string.IsNullOrWhiteSpace(System.IO.Path.GetExtension(path)))
-                    path = System.IO.Path.GetDirectoryName(path);
-
-                ProcessHelper.StartProcess(path);
+                var resolver = new PathResolver(Path);
+                var folder = System.IO.Path.GetDirectoryName(resolver.Path);
+                ProcessHelper.Start(folder);
             }
             catch(Exception ex)
             {

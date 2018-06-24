@@ -66,6 +66,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Attributes\ShowInEditorAttribute.cs" />
+    <Compile Include="Commands\RefreshableCommand.cs" />
     <Compile Include="Commands\TransformToAppCommand.cs" />
     <Compile Include="Commands\TransformToContainerCommand.cs" />
     <Compile Include="Commands\TransformToNoteCommand.cs" />
@@ -78,8 +79,12 @@
     <Compile Include="Helpers\EnumerableExtensions.cs" />
     <Compile Include="Helpers\EditorHelper.cs" />
     <Compile Include="Helpers\Colorful.cs" />
+    <Compile Include="Helpers\PathResolver.cs" />
+    <Compile Include="Helpers\PathType.cs" />
+    <Compile Include="Helpers\ProcessHelper.cs" />
     <Compile Include="Helpers\UIElementCollectionExtensions.cs" />
     <Compile Include="Input\MouseDrag.cs" />
+    <Compile Include="Logging\DebugLogger.cs" />
     <Compile Include="Tiles\AppTile.cs" />
     <Compile Include="Tiles\ContainerTile.cs" />
     <Compile Include="Tiles\ITile.cs" />
@@ -94,7 +99,7 @@
     <Compile Include="Windows\EditTileWindow.xaml.cs">
       <DependentUpon>EditTileWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\ProcessHelper.cs" />
+    <Compile Include="Helpers\PathVariables.cs" />
     <Page Include="Controls\ColorPicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

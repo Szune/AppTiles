@@ -21,29 +21,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE. 
 #endregion
-using AppTiles.Tiles;
-using System;
-using System.Windows.Input;
 using AppTiles.Helpers;
+using AppTiles.Tiles;
 
 namespace AppTiles.Commands
 {
-    public class EditTileCommand : ICommand
+    public class EditTileCommand : RefreshableCommand
     {
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
+            Logging.DebugLogger.WriteLine($"{GetType().Name}.{nameof(CanExecute)}({parameter})");
             return true;
         }
 
-        public void Execute(object parameter)
+        public override void Execute(object parameter)
         {
+            Logging.DebugLogger.WriteLine($"{GetType().Name}.{nameof(Execute)}({parameter})");
             EditorHelper.GetEditTileWindow((ITile) parameter).ShowDialog();
-        }
-
-        public event EventHandler CanExecuteChanged
-        {
-            add => CommandManager.RequerySuggested += value;
-            remove => CommandManager.RequerySuggested -= value;
         }
     }
 }

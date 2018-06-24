@@ -21,22 +21,15 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE. 
 #endregion
-using AppTiles.Tiles;
-
-namespace AppTiles.Commands
+namespace AppTiles.Helpers
 {
-    public class ExecuteTileCommand : RefreshableCommand
+    public enum PathType
     {
-        public override bool CanExecute(object parameter)
-        {
-            Logging.DebugLogger.WriteLine($"{GetType().Name}.{nameof(CanExecute)}({parameter})");
-            return true;
-        }
-
-        public override void Execute(object parameter)
-        {
-            Logging.DebugLogger.WriteLine($"{GetType().Name}.{nameof(Execute)}({parameter})");
-            ((ITile)parameter).Execute();
-        }
+        Unresolved = 0,
+        File,
+        Directory,
+        Http,
+        ActionVariable,
+        UnknownProtocol
     }
 }

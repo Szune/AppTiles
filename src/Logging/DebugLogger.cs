@@ -21,22 +21,42 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE. 
 #endregion
-using AppTiles.Tiles;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace AppTiles.Commands
+namespace AppTiles.Logging
 {
-    public class ExecuteTileCommand : RefreshableCommand
+    public static class DebugLogger
     {
-        public override bool CanExecute(object parameter)
+        #if DEBUG
+        private static readonly List<string> Lines = new List<string>();
+        #endif
+        public static void Write(string msg)
         {
-            Logging.DebugLogger.WriteLine($"{GetType().Name}.{nameof(CanExecute)}({parameter})");
-            return true;
+            // Only used in debug
+#if DEBUG
+            if (Lines.Any())
+                Lines[Lines.Count - 1] = Lines[Lines.Count - 1] + msg;
+            else
+                WriteLine(msg);
+#endif
         }
 
-        public override void Execute(object parameter)
+        public static void WriteLine(string msg)
         {
-            Logging.DebugLogger.WriteLine($"{GetType().Name}.{nameof(Execute)}({parameter})");
-            ((ITile)parameter).Execute();
+            // Only used in debug
+#if DEBUG
+            Lines.Add($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {msg}");
+#endif
+        }
+
+        public static void Save()
+        {
+            // Only used in debug
+#if DEBUG
+            System.IO.File.WriteAllLines($"debug{DateTime.Now:yyyyMMdd HHmmss}.txt", Lines);
+#endif
         }
     }
 }

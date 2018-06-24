@@ -22,88 +22,63 @@
 // SOFTWARE. 
 #endregion
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using AppTiles.Windows;
 
 namespace AppTiles.Helpers
 {
     public static class ProcessHelper
     {
-        private static readonly Dictionary<string, Func<string>> ReplacedVariables = new Dictionary<string, Func<string>>();
-        private static readonly Dictionary<string, Action> ActionVariables = new Dictionary<string, Action>();
-
-        private static Settings _settings;
-
-        static ProcessHelper()
+        public static void Start(string path, string arguments)
         {
-            ReplacedVariables.Add("{AppFolder}", () => Environment.CurrentDirectory);
-            ActionVariables.Add("{AppSettings}", () =>
-            {
-                new SettingsWindow(_settings).ShowDialog();
-            });
+            var resolver = new PathResolver(path);
+            if (resolver.Type != PathType.File)
+                throw new InvalidOperationException("Only file paths support specifying arguments.");
+            OpenFile(resolver.Path, arguments);
         }
 
-        public static string ReplaceVariables(string path)
+        public static void Start(string path)
         {
-            var truePath = path;
-            foreach (var variable in ReplacedVariables)
+            var resolver = new PathResolver(path);
+
+            Start(resolver);
+        }
+
+        public static void Start(PathResolver path)
+        {
+            switch (path.Type)
             {
-                if (truePath.Contains(variable.Key))
-                {
-                    truePath = truePath.Replace(variable.Key, variable.Value());
-                }
+                case PathType.Unresolved:
+                    throw new InvalidOperationException($"Could not resolve path '{path.OriginalPath}', try specifying the protocol (e.g. 'http://').");
+                case PathType.File:
+                case PathType.Directory:
+                    OpenFile(path.Path);
+                    break;
+                case PathType.Http:
+                case PathType.UnknownProtocol:
+                    OpenUsingExplorer(path.Path);
+                    break;
+                case PathType.ActionVariable:
+                    PathVariables.TryExecute(path.Path);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(path), path, $"'{nameof(path)}' resolved to unknown {nameof(PathType)}.");
             }
-
-            return truePath;
         }
 
-        public static void StartProcess(string path)
+
+        private static void OpenFile(string path, string arguments = "")
         {
-            if (PerformVariableAction(path))
-                return;
-            if (string.IsNullOrWhiteSpace(path)) return;
-            if (path.StartsWith("http"))
-                Process.Start(new ProcessStartInfo {Arguments = SurroundWithQuotes(path), FileName = "explorer.exe"});
-            else if (path.StartsWith("file"))
-                Process.Start(new ProcessStartInfo {FileName = Uri.UnescapeDataString(path)});
-            else
-                Process.Start(SurroundWithQuotes(path));
+            Process.Start(new ProcessStartInfo { FileName = Uri.UnescapeDataString(path), Arguments = arguments});
         }
 
-        private static bool PerformVariableAction(string path)
+        private static void OpenUsingExplorer(string path)
         {
-            foreach (var variable in ActionVariables)
-            {
-                if (!path.Contains(variable.Key))
-                    continue;
-                variable.Value();
-                return true;
-            }
-
-            return false;
-        }
-
-        public static void StartProcess(string path, string arguments)
-        {
-            if (string.IsNullOrWhiteSpace(path) || string.IsNullOrWhiteSpace(arguments)) return;
-            if (HasProtocol(path)) return;
-            Process.Start(new ProcessStartInfo {Arguments = SurroundWithQuotes(arguments), FileName = path});
-        }
-
-        public static void UseSettings(Settings settings)
-        {
-            _settings = settings;
+            Process.Start(new ProcessStartInfo { Arguments = SurroundWithQuotes(path), FileName = "explorer.exe" });
         }
 
         private static string SurroundWithQuotes(string path)
         {
             return $"\"{path.Trim('"')}\"";
-        }
-
-        public static bool HasProtocol(string path)
-        {
-            return path.Contains("://");
         }
     }
 }
