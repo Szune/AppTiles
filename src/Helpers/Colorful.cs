@@ -31,7 +31,7 @@ namespace AppTiles.Helpers
     {
         public static Color String(string hex)
         {
-            var alphanumerics = hex.Count(c => char.IsNumber(c) || char.IsLetter(c));
+            var alphanumerics = hex.Count(char.IsLetterOrDigit);
             switch (alphanumerics)
             {
                 case 8:
