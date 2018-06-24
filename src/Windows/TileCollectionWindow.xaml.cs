@@ -54,6 +54,9 @@ namespace AppTiles.Windows
             _tiles = Settings.Current.Tiles;
             PathVariables.UseSettings(Settings.Current);
             Settings.SetMainWindow(this);
+            #if DEBUG
+                Title = "[DEBUG MODE] " + Title;
+            #endif
         }
 
         private void MainWindow_Closing(object sender, CancelEventArgs e)
