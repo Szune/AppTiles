@@ -3,7 +3,7 @@ An application to help you remember important files or links you use semi-regula
 
 Be even more scatterbrained than before!
 
-![AppTiles example](https://raw.githubusercontent.com/Szune/AppTiles/master/Example.png)
+![AppTiles example](https://raw.githubusercontent.com/Szune/AppTiles/3217b3e4ef40e91b1afc11770a7f469350f75743/Example.png)
 
 ## Available tile types
 - App, which just opens:
