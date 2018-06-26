@@ -211,9 +211,15 @@ namespace AppTiles.Controls
             if (result == MessageBoxResult.No)
                 return;
             Settings.SetChanged();
+            int tempCol = newTile.Column, tempRow = newTile.Row;
             var tempButton = newTile.Button;
+            // update the buttons' references
             oldTile.Button.Update(newTile);
             tempButton.Update(oldTile);
+            // update the tiles' saved location
+            newTile.Move(oldTile.Column, oldTile.Row);
+            oldTile.Move(tempCol, tempRow);
+
             MouseDrag.ResetAll();
         }
 

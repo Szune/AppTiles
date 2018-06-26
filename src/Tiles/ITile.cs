@@ -40,5 +40,6 @@ namespace AppTiles.Tiles
         TileButton Button { get; }
         void SetButton(TileButton button);
         void Reset();
+        void Move(int column, int row);
     }
 }

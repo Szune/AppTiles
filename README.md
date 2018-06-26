@@ -23,4 +23,5 @@ Be even more scatterbrained than before!
 * When editing an app tile, you can specify command line arguments that will always be used when executing the program, and/or check "is taking input" (under Advanced) if you need to specify different arguments every time.
 
 ## TODO
-Add search functionality
+* Add search functionality
+* Allow drag & drop of url from a web browser

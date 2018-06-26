@@ -48,8 +48,8 @@ namespace AppTiles.Tiles
         public event EventHandler TextChanged;
 
         private string _text;
-        public int Column { get; }
-        public int Row { get; }
+        public int Column { get; private set; }
+        public int Row { get; private set; }
         public abstract void Execute();
 
 
@@ -108,6 +108,12 @@ namespace AppTiles.Tiles
         public override string ToString()
         {
             return $"[{GetType()} ({Id})] {Text}";
+        }
+
+        public void Move(int column, int row)
+        {
+            Column = column;
+            Row = row;
         }
     }
 }
