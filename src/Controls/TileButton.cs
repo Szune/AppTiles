@@ -22,6 +22,7 @@
 // SOFTWARE. 
 #endregion
 
+using System;
 using AppTiles.Commands;
 using AppTiles.Input;
 using AppTiles.Tiles;
@@ -30,6 +31,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using AppTiles.Helpers;
+#if DEBUG
+using AppTiles.Logging;
+#endif
 
 namespace AppTiles.Controls
 {
@@ -64,6 +69,26 @@ namespace AppTiles.Controls
             ContextMenu = CreateContextMenu();
             _tile.SetButton(this);
             RefreshButtonLayout();
+        }
+
+        public void UpdateText(string text)
+        {
+            if (Content is TextBlock tb)
+            {
+                tb.Text = text;
+            }
+            else
+            {
+                Content = text;
+            }
+        }
+
+        public void RefreshCommands()
+        {
+            _openFolderCommand.Refresh();
+            _toAppCommand.Refresh();
+            _toContainerCommand.Refresh();
+            _toNoteCommand.Refresh();
         }
 
         private void RefreshButtonLayout()
@@ -187,11 +212,20 @@ namespace AppTiles.Controls
             if (!(newButton._tile is ITile newTile))
                 return;
 
+            #if DEBUG
+            CheckDragData(e.Data);
+            #endif
+
             if (!MouseDrag.IsBeingPerformed) // if dragging from file explorer, we won't be notified until it's dropped
             {
                 if (!(newTile is AppTile app))
                     return;
-                DoDragDropFromFileExplorer(e, app);
+                // file
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                    DoDragDropFromFileExplorer(e, app);
+                // url (chrome, does not work for ms edge)
+                else if (e.Data.GetDataPresent(DataFormats.Text))
+                    DoDragDropFromWebBrowser(e, app);
                 return;
             }
 
@@ -200,6 +234,26 @@ namespace AppTiles.Controls
             if (newTile.Id == oldTile.Id)
                 return;
             DoDragDropFromTileToTile(newTile, oldTile);
+        }
+
+        private void DoDragDropFromWebBrowser(DragEventArgs e, AppTile newTile)
+        {
+            var url = e.Data.GetData(DataFormats.Text) as string ?? "";
+            var resolver = new PathResolver(url);
+            if (resolver.Type != PathType.Web && resolver.Type != PathType.UnknownProtocol)
+                return;
+            var host = new Uri(url).Host;
+            _window.Activate();
+            var result =
+                MessageBox.Show($"Do you want to replace the current path '{newTile.Path}' with '{url}'?",
+                    $"Replacing '{_tile.Text}'", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            if (result == MessageBoxResult.No)
+                return;
+            var text = newTile.Text == "-" ? host : newTile.Text;
+            newTile.Path = url;
+            newTile.Text = text;
+            Settings.SetChanged();
+            MouseDrag.ResetAll();
         }
 
         private void DoDragDropFromTileToTile(ITile newTile, ITile oldTile)
@@ -225,14 +279,12 @@ namespace AppTiles.Controls
 
         private void DoDragDropFromFileExplorer(DragEventArgs e, AppTile newTile)
         {
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
-                return;
             var paths = e.Data.GetData(DataFormats.FileDrop) as string[];
             var path = paths?.FirstOrDefault() ?? "";
             _window.Activate();
             var result =
                 MessageBox.Show($"Do you want to replace the current path '{newTile.Path}' with '{path}'?",
-                    "Replacing", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                    $"Replacing '{_tile.Text}'", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.No)
                 return;
             var text = newTile.Text == "-" ? System.IO.Path.GetFileNameWithoutExtension(path) : newTile.Text;
@@ -242,24 +294,35 @@ namespace AppTiles.Controls
             MouseDrag.ResetAll();
         }
 
-        public void UpdateText(string text)
+#if DEBUG
+        private void CheckDragData(IDataObject data)
         {
-            if (Content is TextBlock tb)
+            // only ever used for figuring out how dragdrop-data is represented
+            var dataFormats = new[]
             {
-                tb.Text = text;
-            }
-            else
-            {
-                Content = text;
-            }
-        }
+                DataFormats.StringFormat,
+                DataFormats.Text,
+                DataFormats.Html,
+                DataFormats.OemText,
+                DataFormats.UnicodeText,
+                DataFormats.CommaSeparatedValue,
+                DataFormats.Dif,
+                DataFormats.FileDrop,
+                DataFormats.EnhancedMetafile,
+                DataFormats.Locale,
+                DataFormats.Rtf,
+                DataFormats.Serializable,
+                DataFormats.Xaml,
+                DataFormats.XamlPackage,
+                DataFormats.SymbolicLink
+            };
 
-        public void RefreshCommands()
-        {
-            _openFolderCommand.Refresh();
-            _toAppCommand.Refresh();
-            _toContainerCommand.Refresh();
-            _toNoteCommand.Refresh();
+            foreach (var format in dataFormats)
+            {
+                var fetched = data.GetData(format);
+                DebugLogger.WriteLine($"DragDrop data ({format}): {fetched}");
+            }
         }
+#endif
     }
 }

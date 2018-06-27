@@ -28,7 +28,7 @@ namespace AppTiles.Helpers
         Unresolved = 0,
         File,
         Directory,
-        Http,
+        Web,
         ActionVariable,
         UnknownProtocol
     }

@@ -93,7 +93,7 @@ namespace AppTiles.Helpers
             // web url without protocol?
             if (path.StartsWith("www.")) // assume https
             {
-                Type = PathType.Http;
+                Type = PathType.Web;
                 Path = "https://" + path;
                 return;
             }

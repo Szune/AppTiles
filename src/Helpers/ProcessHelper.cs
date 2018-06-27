@@ -53,7 +53,7 @@ namespace AppTiles.Helpers
                 case PathType.Directory:
                     OpenFile(path.Path);
                     break;
-                case PathType.Http:
+                case PathType.Web:
                 case PathType.UnknownProtocol:
                     OpenUsingExplorer(path.Path);
                     break;
