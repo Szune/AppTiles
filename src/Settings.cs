@@ -29,11 +29,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 
 namespace AppTiles
 {
     public class Settings
     {
+        public const Key SaveKey = Key.F6;
         static Settings()
         {
             if (TryLoadSettings(out var loadedSettings) && loadedSettings.Tiles?.Count > 0)
@@ -120,6 +122,12 @@ namespace AppTiles
                 }
 
                 return settings != null;
+            }
+            catch (FileNotFoundException)
+            {
+                MessageBox.Show($"No '{SettingsName}' file found, using default settings.{Environment.NewLine}Press {SaveKey} on the main window to save your settings at any time.", "Using default settings", MessageBoxButton.OK, MessageBoxImage.Information);
+                settings = null;
+                return false;
             }
             catch (Exception ex)
             {

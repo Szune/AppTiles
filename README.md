@@ -25,3 +25,4 @@ Be even more scatterbrained than before!
 
 ## TODO
 * Add search functionality
+* Setting the path of an app tile through an open file dialog

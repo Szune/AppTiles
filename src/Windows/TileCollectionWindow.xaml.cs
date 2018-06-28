@@ -121,8 +121,10 @@ namespace AppTiles.Windows
         private void UseDefaultSettings()
         {
             Settings.Current.ResetTiles();
-            Settings.Current.Tiles.Add(new AppTile(0, 0, 0, "AppTiles folder", Colors.White, Colors.Black, "{AppFolder}", ""));
-            Settings.Current.Tiles.Add(new AppTile(1, 1, 0, "Settings", Colors.White, Colors.Black, "{AppSettings}", ""));
+            Settings.Current.Tiles.Add(new AppTile(0, 0, 0, "AppTiles folder", Color.FromRgb(254,206,171), Colors.Black, "{AppFolder}", ""));
+            Settings.Current.Tiles.Add(new AppTile(1, 1, 0, "Settings", Color.FromRgb(42, 54, 59), Colors.White, "{AppSettings}", ""));
+            Settings.Current.Tiles.Add(new AppTile(2, 0, 1, "Diablo II", Color.FromRgb(153,184,152), Colors.White, "", ""));
+            Settings.Current.Tiles.Add(new NoteTile(3, 1, 1, "TODO", Color.FromRgb(255, 132, 124), Colors.White, "Improve stuff!"));
             CreateWindow(Settings.Current.Tiles);
         }
 
@@ -147,7 +149,7 @@ namespace AppTiles.Windows
                 for (var i = 0; i < Settings.Current.Tiles.Count; i++)
                     Settings.Current.Tiles[i].Reset();
             }
-            else if (e.Key == Key.F6)
+            else if (e.Key == Settings.SaveKey)
             {
                 AskToSave();
             }
