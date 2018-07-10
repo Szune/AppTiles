@@ -30,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using AppTiles.Utilities;
 
 namespace AppTiles
 {
@@ -76,6 +77,8 @@ namespace AppTiles
         private const string SettingsName = "settings.json";
         private const string SettingsBackupName = "settings.json.bak";
 
+        private static readonly TileTypesBinder TileTypesBinder = new TileTypesBinder();
+
         public static void SetMainWindow(TileCollectionWindow window)
         {
             MainWindow = window;
@@ -95,7 +98,11 @@ namespace AppTiles
                 }
 
                 var json = JsonConvert.SerializeObject(this, Formatting.Indented,
-                    new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Auto});
+                    new JsonSerializerSettings
+                    {
+                        TypeNameHandling = TypeNameHandling.Objects,
+                        SerializationBinder = TileTypesBinder
+                    });
 
                 using (var stream = new StreamWriter(SettingsName))
                 {
@@ -118,7 +125,11 @@ namespace AppTiles
                 using (var stream = new StreamReader(SettingsName))
                 {
                     settings = JsonConvert.DeserializeObject<Settings>(stream.ReadToEnd(),
-                        new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Auto});
+                        new JsonSerializerSettings
+                        {
+                            TypeNameHandling = TypeNameHandling.Objects,
+                            SerializationBinder = TileTypesBinder
+                        });
                 }
 
                 return settings != null;
