@@ -196,7 +196,7 @@ namespace AppTiles.Windows
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Could not save:{Environment.NewLine}\"{ex.Message}\"", "Error", MessageBoxButton.OK,
+                MessageBox.Show($"Could not save:{Environment.NewLine}{ex.GetFormattedMessage()}", "Error", MessageBoxButton.OK,
                     MessageBoxImage.Error);
             }
         }

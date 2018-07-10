@@ -85,6 +85,7 @@
     <Compile Include="Helpers\PathResolver.cs" />
     <Compile Include="Helpers\PathType.cs" />
     <Compile Include="Helpers\ProcessHelper.cs" />
+    <Compile Include="Utilities\ExceptionExtensions.cs" />
     <Compile Include="Utilities\UIElementCollectionExtensions.cs" />
     <Compile Include="Input\MouseDrag.cs" />
     <Compile Include="Logging\DebugLogger.cs" />

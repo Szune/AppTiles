@@ -115,7 +115,7 @@ namespace AppTiles
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Could not save {SettingsName}:{Environment.NewLine}\"{ex.Message}\"", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Could not save {SettingsName}:{Environment.NewLine}{ex.GetFormattedMessage()}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -143,7 +143,7 @@ namespace AppTiles
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Could not load '{SettingsName}', using default settings.{Environment.NewLine}\"{ex.Message}\"", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Could not load '{SettingsName}', using default settings.{Environment.NewLine}{ex.GetFormattedMessage()}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 settings = null;
                 return false;
             }

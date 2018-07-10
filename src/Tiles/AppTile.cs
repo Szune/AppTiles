@@ -28,6 +28,7 @@ using Newtonsoft.Json;
 using System;
 using System.Windows;
 using System.Windows.Media;
+using AppTiles.Utilities;
 
 namespace AppTiles.Tiles
 {
@@ -102,7 +103,7 @@ namespace AppTiles.Tiles
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Could not open app:{Environment.NewLine}\"{ex.Message}\"", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Could not open app:{Environment.NewLine}{ex.GetFormattedMessage()}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -124,7 +125,7 @@ namespace AppTiles.Tiles
             }
             catch(Exception ex)
             {
-                MessageBox.Show($"Could not open folder:{Environment.NewLine}\"{ex.Message}\"", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Could not open folder:{Environment.NewLine}{ex.GetFormattedMessage()}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }
