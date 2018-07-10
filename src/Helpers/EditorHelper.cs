@@ -30,6 +30,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using AppTiles.Utilities;
 
 namespace AppTiles.Helpers
 {
@@ -56,7 +57,7 @@ namespace AppTiles.Helpers
             return new EditTileWindow(tile);
         }
         
-        public static (FrameworkElement left, FrameworkElement right) GetControlRowFromProperty(PropertyInfo prop,
+        public static ControlRow GetControlRowFromProperty(PropertyInfo prop,
             ITile tile)
         {
             switch (prop.PropertyType)

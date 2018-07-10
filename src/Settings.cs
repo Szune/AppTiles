@@ -88,6 +88,7 @@ namespace AppTiles
         {
             try
             {
+                // TODO make more resilient
                 if (File.Exists(SettingsName))
                 {
                     if (File.Exists(SettingsBackupName))
@@ -100,7 +101,7 @@ namespace AppTiles
                 var json = JsonConvert.SerializeObject(this, Formatting.Indented,
                     new JsonSerializerSettings
                     {
-                        TypeNameHandling = TypeNameHandling.Objects,
+                        TypeNameHandling = TypeNameHandling.Auto,
                         SerializationBinder = TileTypesBinder
                     });
 
@@ -127,7 +128,7 @@ namespace AppTiles
                     settings = JsonConvert.DeserializeObject<Settings>(stream.ReadToEnd(),
                         new JsonSerializerSettings
                         {
-                            TypeNameHandling = TypeNameHandling.Objects,
+                            TypeNameHandling = TypeNameHandling.Auto,
                             SerializationBinder = TileTypesBinder
                         });
                 }

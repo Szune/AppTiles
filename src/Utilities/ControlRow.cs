@@ -21,27 +21,31 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE. 
 #endregion
-using System;
-using System.Collections.Generic;
+using System.Windows;
 
-namespace AppTiles.Helpers
+namespace AppTiles.Utilities
 {
-    public static class EnumerableExtensions
+    public class ControlRow
     {
-        public static (List<T> trueList, List<T> falseList) Separate<T>(this IEnumerable<T> enumerable,
-            Func<T, bool> predicate)
-        {
-            var trueList = new List<T>();
-            var falseList = new List<T>();
-            foreach (var item in enumerable)
-            {
-                if(predicate(item))
-                    trueList.Add(item);
-                else
-                    falseList.Add(item);
-            }
+        public FrameworkElement Left { get; }
+        public FrameworkElement Right { get; }
 
-            return (trueList, falseList);
+        public ControlRow(FrameworkElement left, FrameworkElement right)
+        {
+            Left = left;
+            Right = right;
+        }
+    }
+
+    public class ControlRow<TLeft, TRight>
+    {
+        public TLeft Left { get; }
+        public TRight Right { get; }
+
+        public ControlRow(TLeft left, TRight right)
+        {
+            Left = left;
+            Right = right;
         }
     }
 }

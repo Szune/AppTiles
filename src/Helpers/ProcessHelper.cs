@@ -33,7 +33,8 @@ namespace AppTiles.Helpers
             var resolver = new PathResolver(path);
             if (resolver.Type != PathType.File)
                 throw new InvalidOperationException("Only file paths support specifying arguments.");
-            OpenFile(resolver.Path, arguments);
+            var args = PathVariables.GetReplacedPath(arguments);
+            OpenFile(resolver.Path, args);
         }
 
         public static void Start(string path)

@@ -21,21 +21,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE. 
 #endregion
-using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Controls;
+using System.Reflection;
 
-namespace AppTiles.Helpers
+namespace AppTiles.Utilities
 {
-    // ReSharper disable once InconsistentNaming -> needs consistency :(
-    public static class UIElementCollectionExtensions
+    public class PropertyBoundControl<TControl>
     {
-        public static void AddRange(this UIElementCollection collection, IEnumerable<UIElement> items)
+        public PropertyInfo Property { get; }
+        public TControl Control { get; }
+        public PropertyBoundControl(PropertyInfo property, TControl control)
         {
-            foreach (var item in items)
-            {
-                collection.Add(item);
-            }
+            Property = property;
+            Control = control;
         }
     }
 }

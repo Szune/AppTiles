@@ -32,6 +32,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AppTiles.Utilities;
 
 namespace AppTiles.Windows
 {
@@ -60,16 +61,18 @@ namespace AppTiles.Windows
             var props = tile.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(prop =>
                 prop.GetCustomAttribute<ShowInEditorAttribute>() != null).ToList();
 
-            (var advancedProps, var regularProps) = props
+            var properties = props
                 .OrderByDescending(p => p.GetCustomAttribute<ShowInEditorAttribute>().IsBaseClass)
                 .Separate(p => p.GetCustomAttribute<ShowInEditorAttribute>().IsAdvanced);
+            var regularProperties = properties.FalseList;
+            var advancedProperties = properties.TrueList;
 
             // create stackpanels 
-            (var stackPanelLeft, var stackPanelRight) = CreateControlsFromProperties(regularProps, tile);
+            var rows = CreateControlsFromProperties(regularProperties, tile);
 
             // set rows
-            Grid.SetRow(stackPanelLeft, 0);
-            Grid.SetRow(stackPanelRight, 0);
+            Grid.SetRow(rows.Left, 0);
+            Grid.SetRow(rows.Right, 0);
 
             var saveButton = new Button
             {
@@ -77,10 +80,11 @@ namespace AppTiles.Windows
                 Content = "Save"
             };
             saveButton.Click += SaveButton_Click;
-            stackPanelRight.Children.Add(saveButton);
+            // add save button to right side
+            rows.Right.Children.Add(saveButton);
             _generatedHeight += ControlCreator.ControlHeight;
 
-            MainGrid.Children.AddRange(new [] {stackPanelLeft, stackPanelRight});
+            MainGrid.Children.AddRange(new [] {rows.Left, rows.Right});
             // add first row definition
             MainGrid.RowDefinitions.Add(
                 new RowDefinition
@@ -93,7 +97,7 @@ namespace AppTiles.Windows
             _generatedHeight = 0;
 
             // show advanced properties if any
-            if (!advancedProps.Any())
+            if (!advancedProperties.Any())
             {
                 ForceHeight(_collapsedHeight);
                 return;
@@ -109,10 +113,9 @@ namespace AppTiles.Windows
                 }
             };
 
-            (var advancedStackPanelLeft, var advancedStackPanelRight) =
-                CreateControlsFromProperties(advancedProps, tile);
+            var advancedRows = CreateControlsFromProperties(advancedProperties, tile);
 
-            expanderGrid.Children.AddRange(new[] { advancedStackPanelLeft, advancedStackPanelRight});
+            expanderGrid.Children.AddRange(new[] { advancedRows.Left, advancedRows.Right});
 
             // add expander
             var advancedExpander = new Expander
@@ -154,7 +157,7 @@ namespace AppTiles.Windows
             MaxHeight = height;
         }
 
-        private (StackPanel left, StackPanel right) CreateControlsFromProperties(List<PropertyInfo> properties, ITile tile)
+        private ControlRow<StackPanel, StackPanel> CreateControlsFromProperties(List<PropertyInfo> properties, ITile tile)
         {
             var stackPanelLeft = new StackPanel { Orientation = Orientation.Vertical };
             var stackPanelRight = new StackPanel { Orientation = Orientation.Vertical };
@@ -162,16 +165,16 @@ namespace AppTiles.Windows
             // show regular properties
             foreach (var prop in properties)
             {
-                (var leftSideControl, var rightSideControl) = EditorHelper.GetControlRowFromProperty(prop, tile);
-                stackPanelLeft.Children.Add(leftSideControl);
-                _editableControls[prop] = rightSideControl; // have the controls in the same place to make it easier when assigning to props
-                stackPanelRight.Children.Add(rightSideControl);
+                var row = EditorHelper.GetControlRowFromProperty(prop, tile);
+                stackPanelLeft.Children.Add(row.Left);
+                _editableControls[prop] = row.Right; // have the controls in the same place to make it easier when assigning to props
+                stackPanelRight.Children.Add(row.Right);
                 _generatedHeight += ControlCreator.ControlHeight;
             }
             Grid.SetColumn(stackPanelLeft, 0);
             Grid.SetColumn(stackPanelRight, 1);
 
-            return (stackPanelLeft, stackPanelRight);
+            return new ControlRow<StackPanel, StackPanel>(stackPanelLeft, stackPanelRight);
         }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)

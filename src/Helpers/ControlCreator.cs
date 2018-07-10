@@ -28,6 +28,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using AppTiles.Tiles;
+using AppTiles.Utilities;
 using AppTiles.Windows;
 
 namespace AppTiles.Helpers
@@ -38,28 +39,28 @@ namespace AppTiles.Helpers
         public const int ControlHeight = 27;
 
         #region Specific types
-        public static (FrameworkElement left, FrameworkElement right) String(PropertyInfo prop, ITile tile)
+        public static ControlRow String(PropertyInfo prop, ITile tile)
         {
             var label = Label(prop);
             var textBox = TextBox((string) prop.GetValue(tile), prop);
-            return (label, textBox);
+            return new ControlRow(label, textBox);
         }
 
-        public static (FrameworkElement left, FrameworkElement right) Bool(PropertyInfo prop, ITile tile)
+        public static ControlRow Bool(PropertyInfo prop, ITile tile)
         {
             var label = Label(prop);
             var checkBox = CheckBox((bool)prop.GetValue(tile), prop);
-            return (label, checkBox);
+            return new ControlRow(label, checkBox);
         }
 
-        public static (FrameworkElement left, FrameworkElement right) Int(PropertyInfo prop, ITile tile)
+        public static ControlRow Int(PropertyInfo prop, ITile tile)
         {
             var label = Label(prop);
             var textBox = TextBox(prop.GetValue(tile).ToString(), prop);
-            return (label, textBox);
+            return new ControlRow(label, textBox);
         }
 
-        public static (FrameworkElement left, FrameworkElement right) Color(PropertyInfo prop, ITile tile)
+        public static ControlRow Color(PropertyInfo prop, ITile tile)
         {
             var label = Label(prop);
             var button = new Button
@@ -75,8 +76,8 @@ namespace AppTiles.Helpers
             var left = new Grid();
             left.Children.AddRange(new UIElement[] {label, button});
             var right = TextBox(prop.GetValue(tile).ToString(), prop);
-            button.Tag = (prop, right);
-            return (left, right);
+            button.Tag = new PropertyBoundControl<TextBox>(prop, right);
+            return new ControlRow(left, right);
         }
         #endregion
 
@@ -120,15 +121,15 @@ namespace AppTiles.Helpers
         {
             if(!(sender is FrameworkElement element)) 
                 throw new InvalidOperationException($"{nameof(sender)} of type {sender.GetType()} does not inherit {nameof(FrameworkElement)}.");
-            (PropertyInfo prop, TextBox txt) = (ValueTuple<PropertyInfo, TextBox>)element.Tag;
+            var propertyControl = (PropertyBoundControl<TextBox>) element.Tag;
 
-            var displayText = prop.GetCustomAttribute<ShowInEditorAttribute>().DisplayText;
-            var pickedColor = TryGetColorFromString(txt.Text, out var color)
+            var displayText = propertyControl.Property.GetCustomAttribute<ShowInEditorAttribute>().DisplayText;
+            var pickedColor = TryGetColorFromString(propertyControl.Control.Text, out var color)
                 ? ColorPickerWindow.ShowDialog(displayText, color)
                 : ColorPickerWindow.ShowDialog(displayText);
 
             if(pickedColor != null)
-                txt.Text = pickedColor.ToString(); 
+                propertyControl.Control.Text = pickedColor.ToString();
         }
 
         private static bool TryGetColorFromString(string hex, out Color color)
