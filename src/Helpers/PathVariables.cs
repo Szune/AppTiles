@@ -54,6 +54,7 @@ namespace AppTiles.Helpers
                 }
             }
 
+            truePath = Environment.ExpandEnvironmentVariables(truePath); // i.e. %temp%, %os%
             return truePath;
         }
 
