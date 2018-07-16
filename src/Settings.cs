@@ -61,12 +61,6 @@ namespace AppTiles
 
         public static readonly Settings Current;
 
-        public const int DefaultColumnAmount = 2;
-        public const int DefaultRowAmount = 2;
-        public const int DefaultWidth = 350;
-        public const int DefaultHeight = 250;
-
-
         public static TileCollectionWindow MainWindow { get; private set; }
         public static bool IsChanged { get; private set; }
 

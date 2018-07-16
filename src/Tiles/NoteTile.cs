@@ -23,16 +23,26 @@
 #endregion
 using AppTiles.Windows;
 using System.Windows.Media;
+using AppTiles.Attributes;
 
 namespace AppTiles.Tiles
 {
     public class NoteTile : TileBase
     {
-        public string Note { get; set; }
+        public const int DefaultWidth = 300;
+        public const int DefaultHeight = 300;
 
-        public NoteTile(int id, int column, int row, string text, Color background, Color foreground, string note) : base(id, column, row, text, background, foreground)
+        public string Note { get; set; }
+        [ShowInEditor(DisplayText = "Window width")]
+        public int WindowWidth { get; set; }
+        [ShowInEditor(DisplayText = "Window height")]
+        public int WindowHeight { get; set; }
+
+        public NoteTile(int id, int column, int row, string text, Color background, Color foreground, string note, int windowWidth = DefaultWidth, int windowHeight = DefaultHeight) : base(id, column, row, text, background, foreground)
         {
             Note = note;
+            WindowWidth = windowWidth;
+            WindowHeight = windowHeight;
         }
 
         public override void Execute()

@@ -25,6 +25,7 @@
 // performance of rich text boxes are.. suboptimal on my computer.
 #define rtbLags
 
+using System;
 using System.ComponentModel;
 using AppTiles.Tiles;
 using System.Windows;
@@ -41,7 +42,8 @@ namespace AppTiles.Windows
     /// </summary>
     public partial class NoteWindow : Window
     {
-        private bool _askedToSave;
+        private bool _alreadyAskedToSave;
+        private bool _sizeChanged;
         private readonly NoteTile _tile;
         #if rtbLags
             private readonly TextBox _txtNote = new TextBox{AcceptsReturn = true, AcceptsTab = true, TextWrapping = TextWrapping.Wrap, VerticalScrollBarVisibility = ScrollBarVisibility.Auto};
@@ -52,8 +54,11 @@ namespace AppTiles.Windows
         public NoteWindow(NoteTile tile)
         {
             InitializeComponent();
-            MainGrid.Children.Add(_txtNote);
             _tile = tile;
+            Width = Math.Max(tile.WindowWidth, 0); // avoid exception on negative values
+            Height = Math.Max(tile.WindowHeight, 0);
+            Title = $"Note: {tile.Text}";
+            MainGrid.Children.Add(_txtNote);
             SetupTextBox();
         }
 
@@ -77,7 +82,11 @@ namespace AppTiles.Windows
 
         private void Save()
         {
+            _sizeChanged = false;
             _tile.Note = GetText();
+            _tile.WindowWidth = (int)Width;
+            _tile.WindowHeight = (int)Height;
+
             Settings.SetChanged();
         }
 
@@ -99,12 +108,12 @@ namespace AppTiles.Windows
 
         private void AskToSave()
         {
-            if (_tile.Note == GetText() || _askedToSave)
+            if (_alreadyAskedToSave || !_sizeChanged && _tile.Note == GetText())
             {
                 return;
             }
 
-            _askedToSave = true;
+            _alreadyAskedToSave = true;
             var result = MessageBox.Show("There are unsaved changes. Would you like to save them?",
                 "Unsaved changes",
                 MessageBoxButton.YesNo, MessageBoxImage.Question);
@@ -140,6 +149,12 @@ namespace AppTiles.Windows
         private void NoteWindow_OnClosing(object sender, CancelEventArgs e)
         {
             AskToSave();
+        }
+
+        private void NoteWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if(IsLoaded) // avoid triggering event on startup
+                _sizeChanged = true;
         }
     }
 }

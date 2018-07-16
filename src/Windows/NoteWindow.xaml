@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AppTiles.Windows"
         mc:Ignorable="d"
-        Title="NoteWindow" Height="300" Width="300" PreviewKeyDown="NoteWindow_OnPreviewKeyDown" Closing="NoteWindow_OnClosing">
+        Title="NoteWindow" MinWidth="100" MinHeight="120" Width="300" Height="300" PreviewKeyDown="NoteWindow_OnPreviewKeyDown" Closing="NoteWindow_OnClosing" SizeChanged="NoteWindow_OnSizeChanged">
     <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="30px"/>

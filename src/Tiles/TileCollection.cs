@@ -38,6 +38,10 @@ namespace AppTiles.Tiles
         private string _parentText;
         private readonly List<ITile> _tiles;
 
+        public const int DefaultColumnAmount = 2;
+        public const int DefaultRowAmount = 2;
+        public const int DefaultWidth = 350;
+        public const int DefaultHeight = 250;
 
         public int Columns
         {
@@ -72,10 +76,10 @@ namespace AppTiles.Tiles
         public TileCollection()
         {
             _tiles = new List<ITile>();
-            _columns = Settings.DefaultColumnAmount;
-            _rows = Settings.DefaultRowAmount;
-            _width = Settings.DefaultWidth;
-            _height = Settings.DefaultHeight;
+            _columns = DefaultColumnAmount;
+            _rows = DefaultRowAmount;
+            _width = DefaultWidth;
+            _height = DefaultHeight;
         }
 
         public TileCollection(int columns, int rows, int width, int height, List<ITile> tiles, string parentText)
