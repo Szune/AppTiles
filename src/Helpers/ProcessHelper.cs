@@ -69,7 +69,8 @@ namespace AppTiles.Helpers
 
         private static void OpenFile(string path, string arguments = "")
         {
-            Process.Start(new ProcessStartInfo { FileName = Uri.UnescapeDataString(path), Arguments = arguments});
+            var workingDir = System.IO.Path.GetDirectoryName(path);
+            Process.Start(new ProcessStartInfo { FileName = Uri.UnescapeDataString(path), Arguments = arguments, WorkingDirectory = workingDir });
         }
 
         private static void OpenUsingExplorer(string path)
